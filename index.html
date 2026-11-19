@@ -12,7 +12,7 @@
 :root{--ivory:#F6F1E5;--paper:#FCF9F2;--ink:#3E332A;--brown:#392B22;--green:#3F5A3A;--green-d:#2F4630;--terra:#B65C38;--gray:#6B5F4F;--line:#D8CBAF;--ok:#3F5A3A;--warn:#B07C24;--bad:#A63D2A;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{background:#E9E1CE;color:var(--ink);font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:15px;line-height:1.8;}
-.app{max-width:560px;margin:0 auto;min-height:100vh;background:var(--ivory);border-left:1px solid var(--line);border-right:1px solid var(--line);padding-bottom:86px;}
+.app{max-width:560px;margin:0 auto;min-height:100vh;background:var(--ivory);border-left:1px solid var(--line);border-right:1px solid var(--line);padding-bottom:110px;}
 header{background:var(--brown);color:#F3EBDB;padding:20px 20px 14px;display:flex;justify-content:space-between;align-items:flex-end;}
 header .script{font-family:Georgia,serif;font-style:italic;color:#CBD8BC;font-size:14px;}
 header h1{font-size:21px;letter-spacing:.2em;font-weight:600;line-height:1.4;}
@@ -37,7 +37,7 @@ h3{font-size:14px;letter-spacing:.1em;margin:0 0 8px;}
 .quick button{background:var(--paper);border:1px solid var(--line);font-family:inherit;font-size:12.5px;padding:12px 4px;cursor:pointer;min-height:52px;letter-spacing:.04em;color:var(--ink);}
 .quick button:active{background:#F1E8D2;}
 .ev-head{display:flex;gap:12px;align-items:flex-start;cursor:pointer;min-height:48px;}
-.ev .d{flex:0 0 62px;font-size:13px;color:var(--green);font-weight:600;}
+.ev .d{flex:0 0 76px;font-size:12.5px;color:var(--green);font-weight:600;white-space:nowrap;}
 .ev .b{flex:1;min-width:0;}
 .ev .t{font-size:14.5px;font-weight:600;line-height:1.6;}
 .ev .s{font-size:12px;color:var(--gray);}
@@ -59,6 +59,7 @@ textarea{line-height:1.9;}
 .mini{font-size:11.5px;padding:7px 12px;min-height:38px;background:none;border:1px solid var(--line);color:var(--gray);font-family:inherit;cursor:pointer;}
 .result{background:var(--brown);color:#F3EBDB;padding:18px 16px;margin-top:16px;}
 .result .row{display:flex;justify-content:space-between;font-size:14px;padding:3px 0;gap:8px;}
+.result .row span:first-child{flex:1;}
 .result .row.big{font-size:16.5px;border-top:1px solid #6B5847;margin-top:8px;padding-top:10px;}
 .result .yen{font-family:Georgia,serif;white-space:nowrap;}
 .signal{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13.5px;}
@@ -76,6 +77,14 @@ textarea{line-height:1.9;}
 .shop:last-child{border-bottom:none;}
 .shop input{width:20px;height:20px;flex:0 0 20px;margin-top:3px;accent-color:var(--terra);}
 .shop.done span{text-decoration:line-through;color:var(--gray);}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:var(--gray);margin-bottom:4px;}
+.cal-cells{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-cell{min-height:52px;border:1px solid var(--line);background:#fff;padding:3px 4px;cursor:pointer;font-size:12px;line-height:1.35;overflow:hidden;}
+.cal-cell.dim{background:var(--ivory);color:var(--gray);cursor:default;}
+.cal-cell.today{border-color:var(--terra);border-width:2px;}
+.cal-cell.sel{background:#F1E8D2;border-color:var(--green);}
+.cal-cell .nm{display:block;font-size:9px;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
+.cal-cell .dt{font-family:Georgia,serif;}
 nav.bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:560px;background:var(--paper);border-top:1px solid var(--line);display:flex;z-index:10;padding-bottom:env(safe-area-inset-bottom);}
 nav.bottom button{flex:1;background:none;border:none;font-family:inherit;font-size:10.5px;color:var(--gray);padding:8px 2px 7px;cursor:pointer;letter-spacing:.05em;min-height:58px;}
 nav.bottom button svg{display:block;margin:0 auto 3px;width:22px;height:22px;stroke:var(--gray);fill:none;stroke-width:1.6;}
@@ -137,7 +146,7 @@ footer{padding:14px 16px 10px;font-size:11px;color:var(--gray);text-align:center
 <h3>画面ごとの説明</h3>
 <details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">ホーム</summary><p class="note" style="margin:4px 0 8px;">次の会までの日数と、「今日やること」が自動で出ます。開催7日前・3日前・開催後になると、やるべき段取りがここに並びます。経理チェックの進み具合も確認できます。</p></details>
 <details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">予定（案件カルテ）</summary><p class="note" style="margin:4px 0 8px;">カードをタップすると開きます。中には段取りチェック（人数確定、アレルギー確認、仕入、入金、開催、請求）と、アレルギーのメモ欄があります。状態はボタン1つで次へ進められます。</p></details>
-<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">コース</summary><p class="note" style="margin:4px 0 8px;">案件を選んで、1行に1皿で書きます。「保存する」を押すと残り、告知用に番号付きで整います。仕入れリストは、買い物中にチェックを付けながら使えます。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">コース</summary><p class="note" style="margin:4px 0 8px;">案件を選んで、1行に1皿で書きます。「保存する」を押すと残り、告知用に番号付きで整います。予定にない会は、「新しい会を自分で追加する」に名前を打てば追加できます。仕入れリストは、買い物中にチェックを付けながら使えます。最初から入っているコースは季節と作風からの「たたき台」なので、実際の献立に書き換えてください。</p></details>
 <details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">原価</summary><p class="note" style="margin:4px 0 8px;">案件を選ぶと人数が自動で入ります。食材の原価率が目標（初期設定30％）に収まっているか、信号の色で分かります。赤いときは「目標に収まる会費」が目安です。入力は案件ごとに保存されます。</p></details>
 <details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">事務（返信文・AI返信・経理）</summary><p class="note" style="margin:4px 0 8px;">返信文：型が決まった返事はここから。案件を選ぶと会場・日付・人数が入ります。<br>AI返信：届いた文を貼ると、その場の下書きか、Muse／ChatGPTに考えてもらうためのプロンプトが作れます。<br>経理：freeeの運用チェックです。レシートはその場で撮影、が一番効きます。</p></details>
 </div>
@@ -164,7 +173,16 @@ footer{padding:14px 16px 10px;font-size:11px;color:var(--gray);text-align:center
 <!-- 予定 -->
 <section class="tab" id="tab-sched">
 <h2>案件カルテ</h2>
-<p class="note">1件の会に、日程・人数・アレルギー・段取りを全部まとめます。カードをタップすると中身が開きます。原価・コース・返信文は、この案件を選ぶだけでつながります。</p>
+<p class="note">1件の会に、日程・人数・アレルギー・段取りを全部まとめます。カードをタップすると中身が開き、名前・日付・人数・形式はその場で直せます。原価・コース・返信文は、この案件を選ぶだけでつながります。</p>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;">
+<button class="mini" id="cal-prev" style="min-width:52px;">‹ 前月</button>
+<div id="cal-title" style="font-weight:600;letter-spacing:.12em;"></div>
+<button class="mini" id="cal-next" style="min-width:52px;">次月 ›</button>
+</div>
+<div id="cal-grid" style="margin-top:10px;"></div>
+<div id="cal-day" style="margin-top:12px;"></div>
+</div>
 <div id="evlist"></div>
 <div class="card">
 <h3>予定を追加</h3>
@@ -183,10 +201,16 @@ footer{padding:14px 16px 10px;font-size:11px;color:var(--gray);text-align:center
 <!-- コース -->
 <section class="tab" id="tab-course">
 <h2>コースと仕入れ</h2>
-<p class="note">案件を選んで、1行に1皿で書きます。保存され、告知用に番号付きで整います。仕入れリストは買い物中にチェックできます。</p>
+<p class="note">案件を選んで、1行に1皿で書きます。保存され、告知用に番号付きで整います。仕入れリストは買い物中にチェックできます。カモシカとちいさな庭には、季節と作風から作った「たたき台」のコースを入れてあります。そのまま書き換えて使ってください。</p>
 <div class="card">
 <label>どの会のコースか</label>
 <select id="m-event"></select>
+<label>新しい会を自分で追加する</label>
+<div style="display:flex;gap:8px;">
+<input type="text" id="m-new" placeholder="例：〇〇邸での出張料理" style="flex:1;">
+<button class="mini" id="m-add" style="flex:0 0 84px;border-color:var(--green);color:var(--green);font-size:13px;">追加</button>
+</div>
+<p class="note" style="margin:8px 0 0;">予定にない会でも、ここで名前を打てば追加できます。追加した会は、原価・返信文でも選べるようになります。</p>
 <label>コース内容（1行に1皿）<span id="m-count" style="color:var(--terra);"></span></label>
 <textarea id="m-text" rows="8" placeholder="例：&#10;畑の野菜の盛り合わせ&#10;かぶのポタージュ&#10;旬の魚の薪火焼き&#10;季節野菜と豆の煮込み&#10;自家製パン&#10;デザートと食後のお茶"></textarea>
 <button class="btn sub" id="m-save">保存する</button>
@@ -274,6 +298,15 @@ footer{padding:14px 16px 10px;font-size:11px;color:var(--gray);text-align:center
 </div>
 </div>
 <div id="office-acct" style="display:none;">
+<div class="card">
+<h3>レシートをもらったら（freeeでやること）</h3>
+<div class="todo"><div class="dot"></div><div><b>1．freeeを開く</b><small>アプリ版の freee会計 が一番速いです。下のボタンからも開けます。</small></div></div>
+<div class="todo"><div class="dot"></div><div><b>2．「取引を登録」→レシートを撮影</b><small>買い物の直後、その場で撮るのがコツです。財布にためないでください。</small></div></div>
+<div class="todo"><div class="dot"></div><div><b>3．日付と金額は自動で入る</b><small>読み取り結果を確認して、勘定科目（食材なら「仕入」や「消耗品費」）を選びます。</small></div></div>
+<div class="todo"><div class="dot"></div><div><b>4．タグに案件名を入れて保存</b><small>例：「カモシカ初霜の食卓」。あとから会ごとの収支が見えるようになります。</small></div></div>
+<a href="https://www.freee.co.jp/" target="_blank" rel="noopener" style="display:block;text-align:center;background:var(--green);color:#fff;text-decoration:none;font-size:14px;letter-spacing:.1em;padding:14px;min-height:50px;margin-top:12px;">freee公式サイトを開く</a>
+<p class="note" style="margin:10px 0 0;">※この手帳は段取り用で、freeeの代わりではありません。撮影と登録は freee 側で行います。</p>
+</div>
 <p class="note">freeeの力を引き出すのは「口座・カード連携 → その場でレシート撮影 → 請求と入金の照合」の3点です。案件名でタグをそろえると、あとから会ごとの収支も見えます。</p>
 <div class="card">
 <h3>出先でその場に</h3>
@@ -362,6 +395,10 @@ function renderEv(){
       const sp=document.createElement('span'); sp.textContent=p;
       l.appendChild(cb); l.appendChild(sp); det.appendChild(l);
     });
+    const nl=document.createElement('label'); nl.textContent='会場・案件名'; det.appendChild(nl);
+    const ni=document.createElement('input'); ni.type='text'; ni.value=ev.name; ni.onchange=()=>{ const old=ev.name; ev.name=ni.value.trim()||old; if(menus[old]!==undefined&&menus[ev.name]===undefined){ menus[ev.name]=menus[old]; delete menus[old]; localStorage.setItem(MKEY,JSON.stringify(menus)); } saveEv(); renderEv(); toast('名前を保存しました'); }; det.appendChild(ni);
+    const tl2=document.createElement('label'); tl2.textContent='形式'; det.appendChild(tl2);
+    const ts=document.createElement('select'); ['料理会（コース）','出張料理','ケータリング','料理教室','ポップアップ','移動日'].forEach(t=>{const o=document.createElement('option');o.textContent=t;ts.appendChild(o);}); ts.value=ev.type; ts.onchange=()=>{ ev.type=ts.value; saveEv(); renderEv(); toast('形式を保存しました'); }; det.appendChild(ts);
     const g=document.createElement('div'); g.className='grid2';
     const dw=document.createElement('div'); const dl=document.createElement('label'); dl.textContent='日付'; const di=document.createElement('input'); di.type='date'; di.value=ev.date||''; di.onchange=()=>{ ev.date=di.value; saveEv(); renderEv(); renderHome(); toast('日付を保存しました'); }; dw.appendChild(dl); dw.appendChild(di);
     const pw=document.createElement('div'); const pl=document.createElement('label'); pl.textContent='人数'; const pi2=document.createElement('input'); pi2.type='number'; pi2.inputMode='numeric'; pi2.value=ev.people||''; pi2.placeholder='例：10'; pi2.onchange=()=>{ ev.people=pi2.value; saveEv(); renderEv(); toast('人数を保存しました'); }; pw.appendChild(pl); pw.appendChild(pi2);
@@ -384,7 +421,48 @@ function renderEv(){
   });
   if(!evs.length) el.innerHTML='<p class="note">予定はまだありません。下のフォームから追加できます。</p>';
   fillEventSelects();
+  renderCalendar();
 }
+// ---------- calendar ----------
+const calNow=new Date();
+let calY=calNow.getFullYear(), calM=calNow.getMonth(), calSel=todayStr();
+function renderCalendar(){
+  $('#cal-title').textContent=calY+'年'+(calM+1)+'月';
+  const grid=$('#cal-grid'); grid.innerHTML='';
+  const head=document.createElement('div'); head.className='cal-head';
+  ['日','月','火','水','木','金','土'].forEach(w=>{const s=document.createElement('div');s.textContent=w;head.appendChild(s);});
+  grid.appendChild(head);
+  const cells=document.createElement('div'); cells.className='cal-cells';
+  const first=new Date(calY,calM,1); const startDay=first.getDay();
+  const dim=new Date(calY,calM+1,0).getDate(); const dpm=new Date(calY,calM,0).getDate();
+  const t=todayStr();
+  for(let i=0;i<42;i++){
+    const dayNum=i-startDay+1; let ds,dimmed=false,dnum;
+    if(dayNum<1){ dnum=dpm+dayNum; dimmed=true; const d=new Date(calY,calM-1,dnum); ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+    else if(dayNum>dim){ dnum=dayNum-dim; dimmed=true; const d=new Date(calY,calM+1,dnum); ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+    else { dnum=dayNum; ds=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(dnum).padStart(2,'0'); }
+    const c=document.createElement('div'); c.className='cal-cell'+(dimmed?' dim':'')+(ds===t?' today':'')+(ds===calSel?' sel':'');
+    let inner='<span class="dt">'+dnum+'</span>';
+    if(!dimmed){ evs.filter(e=>e.date===ds).slice(0,2).forEach(e=>{ inner+='<span class="nm">'+esc(e.name)+'</span>'; }); }
+    c.innerHTML=inner;
+    if(!dimmed){ c.onclick=()=>{ calSel=ds; renderCalendar(); }; }
+    cells.appendChild(c);
+    if(i>=35 && dayNum>=dim && new Date(calY,calM+1,1).getDay()===0) break;
+  }
+  grid.appendChild(cells);
+  const dayBox=$('#cal-day');
+  const list=evs.filter(e=>e.date===calSel);
+  let html='<div style="font-size:13.5px;"><b>'+fmtDate(calSel)+'</b> の予定</div>';
+  if(list.length){ html+=list.map(e=>'<div style="font-size:13px;padding:4px 0;border-bottom:1px solid var(--line);">'+esc(e.name)+'（'+esc(e.type)+(e.people?'・'+esc(e.people)+'名':'')+'）<span class="'+badgeCls(e.status)+'" style="margin-left:6px;">'+esc(e.status)+'</span></div>').join(''); }
+  else html+='<div class="note" style="margin:4px 0;">この日の予定はありません。</div>';
+  dayBox.innerHTML=html;
+  const add=document.createElement('button'); add.className='btn sub'; add.style.marginTop='10px'; add.textContent='この日に予定を追加する';
+  add.onclick=()=>{ $('#f-date').value=calSel; document.getElementById('f-name').scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>$('#f-name').focus(),400); };
+  dayBox.appendChild(add);
+}
+$('#cal-prev').onclick=()=>{ calM--; if(calM<0){calM=11;calY--;} renderCalendar(); };
+$('#cal-next').onclick=()=>{ calM++; if(calM>11){calM=0;calY++;} renderCalendar(); };
+
 $('#f-add').onclick=()=>{
   const name=$('#f-name').value.trim(); if(!name){ toast('会場・案件名を入れてください'); return; }
   evs.push({date:$('#f-date').value,name,type:$('#f-type').value,status:$('#f-status').value,people:$('#f-people').value,allergy:'',prep:{}});
@@ -392,8 +470,11 @@ $('#f-add').onclick=()=>{
 };
 
 // event selects shared by course / cost / templates
+const CCKEY='daidokoro-courses-v1';
+let customCourses=[]; try{ customCourses=JSON.parse(localStorage.getItem(CCKEY))||[]; }catch(e){}
+function allNames(){ return [...new Set([...evs.map(e=>e.name),...customCourses])]; }
 function fillEventSelects(){
-  const names=[...new Set(evs.map(e=>e.name))];
+  const names=allNames();
   [['#m-event',menuKeyCur],['#c-event',costKeyCur],['#t-event',tplKeyCur],['#a-event',aiKeyCur]].forEach(([sel,cur])=>{
     const el=$(sel); if(!el) return; const prev=cur();
     el.innerHTML='';
@@ -402,7 +483,7 @@ function fillEventSelects(){
   });
   loadMenu(); loadShop(); loadCost(); renderTpls();
 }
-function evByName(n){ return evs.find(e=>e.name===n); }
+function evByName(n){ return evs.find(e=>e.name===n) || (n?{name:n,date:'',type:'',people:'',status:'',allergy:''}:null); }
 
 // ---------- home ----------
 function renderHome(){
@@ -424,8 +505,9 @@ if(d===0) todos.push(['本日開催',e.name]);
 const box=$('#h-todos');
 box.innerHTML = todos.length? '': '<div class="todo"><div class="dot" style="background:var(--green);"></div><div>直近の段取りはありません。<small>予定が近づくと、ここに自動で出ます。</small></div></div>';
 todos.slice(0,6).forEach(([title,sub])=>{
-const d=document.createElement('div'); d.className='todo';
+const d=document.createElement('div'); d.className='todo'; d.style.cursor='pointer';
 d.innerHTML='<div class="dot"></div><div>'+esc(title)+'<small>'+esc(sub)+'</small></div>';
+d.onclick=()=>goTab('sched');
 box.appendChild(d);
 });
 const pct=acctProgress(); $('#h-acct-pct').textContent=pct+'%'; $('#h-acct-bar').style.width=pct+'%';
@@ -437,6 +519,24 @@ let menus={}, shops={};
 try{ menus=JSON.parse(localStorage.getItem(MKEY))||{};}catch(e){}
 try{ shops=JSON.parse(localStorage.getItem(SHKEY))||{};}catch(e){}
 function menuKeyCur(){ return $('#m-event')?$('#m-event').value:'';}
+// seed draft menus once (actual menus are not published; these are editable drafts in his style)
+(function seedDrafts(){
+if(localStorage.getItem('daidokoro-seed-v3')) return;
+const kam='器と料理 カモシカ（東京・下高井戸）「初霜の食卓」';
+const nii='ちいさな庭（岐阜・恵那）';
+if(!menus[kam]) menus[kam]='冬の畑の野菜盛り合わせ\n蕪のすり流し\n旬の魚の薪火焼き\n根菜と豆の煮込み\n季節の炊き込みご飯と味噌汁\nさつまいもの甘味\n温かいお茶';
+if(!menus[nii]) menus[nii]='畑のサラダ\nかぼちゃのポタージュ\n季節野菜のグリルと鶏の薪火焼き\n炊き込みご飯\nデザートとお茶';
+localStorage.setItem(MKEY,JSON.stringify(menus));
+if(!shops[kam]){ shops[kam]={text:'蕪 10個\n大根 5本\n人参 2kg\n里芋 1kg\n旬の魚 人数分\n豆 500g\n米 5kg\nさつまいも 5本',done:{}}; localStorage.setItem(SHKEY,JSON.stringify(shops)); }
+localStorage.setItem('daidokoro-seed-v3','1');
+})();
+$('#m-add').onclick=()=>{
+const n=$('#m-new').value.trim(); if(!n){ toast('会の名前を打ってください'); return; }
+if(!allNames().includes(n)){ customCourses.push(n); localStorage.setItem(CCKEY,JSON.stringify(customCourses)); }
+fillEventSelects();
+$('#m-event').value=n; loadMenu(); loadShop();
+$('#m-new').value=''; toast('追加しました');
+};
 function loadMenu(){ const k=menuKeyCur(); if(!k) return; $('#m-text').value=menus[k]||''; renderMenuPreview();}
 function menuLines(){ return $('#m-text').value.split('\n').map(s=>s.trim()).filter(Boolean);}
 function renderMenuPreview(){
@@ -490,7 +590,7 @@ $('#c-result').innerHTML=
 '<div class="row"><span>食材の原価率</span><span class="yen">'+fr.toFixed(1)+'%</span></div>'+
 '<div class="row"><span>1人あたり経費</span><span class="yen">'+(people?yen(all/people):'―')+'</span></div>'+
 (needPrice?'<div class="row"><span>目標'+target+'％に収まる会費（1人）</span><span class="yen">'+yen(needPrice)+'</span></div>':'')+
-'<div class="row big"><span>粗利（自分の取り分）</span><span class="yen">'+yen(gross)+'（'+gr.toFixed(1)+'%）</span></div>';
+'<div class="row big"><span>粗利</span><span class="yen">'+yen(gross)+'（'+gr.toFixed(1)+'%）</span></div>';
 const lamp=$('#c-signal');
 let color,label;
 if(fr<=target){ color='var(--ok)'; label='健全です。目標の原価率に収まっています。';}
@@ -647,7 +747,7 @@ window.scrollTo({top:0});
 $('#h-help').onclick=openHelp;
 $('#h-help2').onclick=openHelp;
 $('#h-back').onclick=()=>goTab('home');
-const DATAKEYS=['daidokoro-schedule-v2','daidokoro-menu-v1','daidokoro-shop-v1','daidokoro-cost-v2','daidokoro-check-v1'];
+const DATAKEYS=['daidokoro-schedule-v2','daidokoro-menu-v1','daidokoro-shop-v1','daidokoro-cost-v2','daidokoro-check-v1','daidokoro-courses-v1'];
 $('#x-export').onclick=()=>{
 const data={}; DATAKEYS.forEach(k=>{ const v=localStorage.getItem(k); if(v!==null) data[k]=v; });
 const blob=new Blob([JSON.stringify({app:'daidokoro-techou',version:2,exported:new Date().toISOString(),data},null,2)],{type:'application/json'});
