@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#392B22">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="台所手帳">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23392B22'/%3E%3Cpath d='M32 50c0-14 2-24 14-32-1 14-4 26-14 32zm0 0c0-10-2-18-12-24 1 10 3 20 12 24z' fill='%23CBD8BC'/%3E%3C/svg%3E">
+<title>台所手帳｜伊藤渉さん向け業務アプリ</title>
+<style>
+:root{--ivory:#F6F1E5;--paper:#FCF9F2;--ink:#3E332A;--brown:#392B22;--green:#3F5A3A;--green-d:#2F4630;--terra:#B65C38;--gray:#6B5F4F;--line:#D8CBAF;--ok:#3F5A3A;--warn:#B07C24;--bad:#A63D2A;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:#E9E1CE;color:var(--ink);font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:15px;line-height:1.8;}
+.app{max-width:560px;margin:0 auto;min-height:100vh;background:var(--ivory);border-left:1px solid var(--line);border-right:1px solid var(--line);padding-bottom:86px;}
+header{background:var(--brown);color:#F3EBDB;padding:20px 20px 14px;display:flex;justify-content:space-between;align-items:flex-end;}
+header .script{font-family:Georgia,serif;font-style:italic;color:#CBD8BC;font-size:14px;}
+header h1{font-size:21px;letter-spacing:.2em;font-weight:600;line-height:1.4;}
+header .who{font-size:11px;color:#BFAE92;letter-spacing:.06em;text-align:right;line-height:1.7;}
+main{padding:18px 16px 8px;}
+section.tab{display:none;}
+section.tab.on{display:block;}
+h2{font-size:16px;letter-spacing:.12em;margin:2px 0 12px;}
+h3{font-size:14px;letter-spacing:.1em;margin:0 0 8px;}
+.note{font-size:12px;color:var(--gray);margin-bottom:14px;line-height:1.8;}
+.card{background:var(--paper);border:1px solid var(--line);padding:16px;margin-bottom:12px;}
+.hero-num{font-family:Georgia,serif;font-size:44px;line-height:1;color:var(--terra);}
+.hero-flex{display:flex;gap:16px;align-items:center;}
+.hero-flex .t{font-size:14px;line-height:1.8;}
+.todo{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;align-items:flex-start;}
+.todo:last-child{border-bottom:none;}
+.todo .dot{flex:0 0 9px;width:9px;height:9px;border-radius:50%;background:var(--terra);margin-top:9px;}
+.todo small{display:block;color:var(--gray);font-size:12px;}
+.progress{height:10px;background:#EAE0C9;border:1px solid var(--line);margin:8px 0 4px;}
+.progress i{display:block;height:100%;background:var(--green);transition:width .3s;}
+.quick{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.quick button{background:var(--paper);border:1px solid var(--line);font-family:inherit;font-size:12.5px;padding:12px 4px;cursor:pointer;min-height:52px;letter-spacing:.04em;color:var(--ink);}
+.quick button:active{background:#F1E8D2;}
+.ev-head{display:flex;gap:12px;align-items:flex-start;cursor:pointer;min-height:48px;}
+.ev .d{flex:0 0 62px;font-size:13px;color:var(--green);font-weight:600;}
+.ev .b{flex:1;min-width:0;}
+.ev .t{font-size:14.5px;font-weight:600;line-height:1.6;}
+.ev .s{font-size:12px;color:var(--gray);}
+.ev .chev{color:var(--gray);font-size:13px;padding-top:4px;}
+.badge{display:inline-block;font-size:11px;padding:1px 10px;border:1px solid var(--green);color:var(--green);margin-top:3px;letter-spacing:.06em;}
+.badge.done{border-color:var(--gray);color:var(--gray);}
+.badge.ask{border-color:var(--terra);color:var(--terra);}
+.ev-detail{display:none;border-top:1px solid var(--line);margin-top:12px;padding-top:12px;}
+.ev.open .ev-detail{display:block;}
+.prep{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:13.5px;cursor:pointer;}
+.prep input{width:20px;height:20px;flex:0 0 20px;margin-top:3px;accent-color:var(--green);}
+label{display:block;font-size:12.5px;color:var(--gray);letter-spacing:.06em;margin:12px 0 4px;}
+input,select,textarea{width:100%;font-family:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:2px;}
+textarea{line-height:1.9;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;}
+.btn{display:block;width:100%;background:var(--terra);color:#fff;border:none;font-family:inherit;font-size:14px;letter-spacing:.12em;padding:14px;cursor:pointer;margin-top:14px;min-height:50px;}
+.btn.sub{background:var(--green);}
+.btn.ghost{background:none;color:var(--gray);border:1px solid var(--line);}
+.mini{font-size:11.5px;padding:7px 12px;min-height:38px;background:none;border:1px solid var(--line);color:var(--gray);font-family:inherit;cursor:pointer;}
+.result{background:var(--brown);color:#F3EBDB;padding:18px 16px;margin-top:16px;}
+.result .row{display:flex;justify-content:space-between;font-size:14px;padding:3px 0;gap:8px;}
+.result .row.big{font-size:16.5px;border-top:1px solid #6B5847;margin-top:8px;padding-top:10px;}
+.result .yen{font-family:Georgia,serif;white-space:nowrap;}
+.signal{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13.5px;}
+.signal .lamp{width:14px;height:14px;border-radius:50%;flex:0 0 14px;}
+.tpl{white-space:pre-wrap;font-size:13.5px;background:#fff;border:1px solid var(--line);padding:12px;margin-top:8px;line-height:1.9;}
+.copy{width:100%;background:var(--green);color:#fff;border:none;font-family:inherit;font-size:13px;letter-spacing:.1em;padding:12px;cursor:pointer;margin-top:10px;min-height:48px;}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer;}
+.chk:last-child{border-bottom:none;}
+.chk input{width:20px;height:20px;flex:0 0 20px;margin-top:4px;accent-color:var(--green);}
+.chk small{display:block;color:var(--gray);font-size:12px;}
+.seg{display:flex;border:1px solid var(--line);margin-bottom:14px;}
+.seg button{flex:1;background:var(--paper);border:none;font-family:inherit;font-size:13.5px;padding:12px;cursor:pointer;min-height:48px;color:var(--gray);letter-spacing:.08em;}
+.seg button.on{background:var(--green);color:#fff;}
+.shop{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer;}
+.shop:last-child{border-bottom:none;}
+.shop input{width:20px;height:20px;flex:0 0 20px;margin-top:3px;accent-color:var(--terra);}
+.shop.done span{text-decoration:line-through;color:var(--gray);}
+nav.bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:560px;background:var(--paper);border-top:1px solid var(--line);display:flex;z-index:10;padding-bottom:env(safe-area-inset-bottom);}
+nav.bottom button{flex:1;background:none;border:none;font-family:inherit;font-size:10.5px;color:var(--gray);padding:8px 2px 7px;cursor:pointer;letter-spacing:.05em;min-height:58px;}
+nav.bottom button svg{display:block;margin:0 auto 3px;width:22px;height:22px;stroke:var(--gray);fill:none;stroke-width:1.6;}
+nav.bottom button.on{color:var(--terra);font-weight:700;}
+nav.bottom button.on svg{stroke:var(--terra);}
+footer{padding:14px 16px 10px;font-size:11px;color:var(--gray);text-align:center;line-height:1.9;}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--brown);color:#F3EBDB;font-size:13px;padding:11px 24px;letter-spacing:.08em;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20;white-space:nowrap;}
+.toast.show{opacity:1;}
+:focus-visible{outline:2px solid var(--terra);outline-offset:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div><div class="script">kitchen notebook</div><h1>台所手帳</h1></div>
+<div class="who">伊藤 渉さん向け<br>業務アプリ 完成版<br><button id="h-help" style="margin-top:6px;background:none;border:1px solid #BFAE92;color:#F3EBDB;font-family:inherit;font-size:11.5px;padding:6px 14px;cursor:pointer;letter-spacing:.1em;min-height:36px;">使い方</button></div>
+</header>
+
+<main>
+<!-- ホーム -->
+<section class="tab on" id="tab-home">
+<div class="card">
+<div class="hero-flex">
+<div><div class="hero-num" id="h-days">―</div><div style="font-size:12px;color:var(--gray);" id="h-days-label">日後</div></div>
+<div class="t" id="h-next">次の予定を読み込んでいます。</div>
+</div>
+</div>
+<h2>今日やること</h2>
+<div class="card" id="h-todos" style="padding:6px 16px;"></div>
+<h2>今月の経理（freee）</h2>
+<div class="card">
+<div style="display:flex;justify-content:space-between;font-size:13.5px;"><span>チェックの進み具合</span><span id="h-acct-pct" style="font-family:Georgia,serif;">0%</span></div>
+<div class="progress"><i id="h-acct-bar" style="width:0%"></i></div>
+<div class="note" style="margin:4px 0 0;">レシートはその場で撮影、請求は開催後3日以内。ためないのが一番の効率化です。</div>
+</div>
+<div class="card" id="h-backup" style="display:none;border-color:var(--terra);">
+<div style="font-size:13.5px;">データの控えが、まだ取られていません。<small style="display:block;color:var(--gray);font-size:12px;">端末を変えるときに困らないよう、「使い方」ページから書き出しをしておくと安心です。</small></div>
+</div>
+<h2>すぐ使う</h2>
+<div class="quick">
+<button data-goto="cost">原価を出す</button>
+<button data-goto="course">コースを書く</button>
+<button data-goto="office" data-seg="reply">返信文を使う</button>
+</div>
+<button class="btn ghost" id="h-help2" style="margin-top:2px;">使い方がわからないとき（ヘルプを開く）</button>
+</section>
+
+<!-- ヘルプ -->
+<section class="tab" id="tab-help">
+<h2>使い方</h2>
+<p class="note">迷ったら、ここに戻ってきてください。全部の画面の説明と、よくある質問をまとめています。</p>
+<div class="card">
+<h3>はじめの3ステップ</h3>
+<div class="todo"><div class="dot"></div><div><b>1．予定を入れる</b><small>「予定」タブで、会場・日付・人数を追加します。ここが全ての起点です。</small></div></div>
+<div class="todo"><div class="dot"></div><div><b>2．コースと原価を決める</b><small>「コース」で献立を書き、「原価」で会費が妥当か信号を確認します。</small></div></div>
+<div class="todo"><div class="dot"></div><div><b>3．当日と、その後</b><small>段取りチェックで準備を進め、終わったら状態を「請求済み」へ。返信は「事務」タブで。</small></div></div>
+</div>
+<div class="card">
+<h3>画面ごとの説明</h3>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">ホーム</summary><p class="note" style="margin:4px 0 8px;">次の会までの日数と、「今日やること」が自動で出ます。開催7日前・3日前・開催後になると、やるべき段取りがここに並びます。経理チェックの進み具合も確認できます。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">予定（案件カルテ）</summary><p class="note" style="margin:4px 0 8px;">カードをタップすると開きます。中には段取りチェック（人数確定、アレルギー確認、仕入、入金、開催、請求）と、アレルギーのメモ欄があります。状態はボタン1つで次へ進められます。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">コース</summary><p class="note" style="margin:4px 0 8px;">案件を選んで、1行に1皿で書きます。「保存する」を押すと残り、告知用に番号付きで整います。仕入れリストは、買い物中にチェックを付けながら使えます。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">原価</summary><p class="note" style="margin:4px 0 8px;">案件を選ぶと人数が自動で入ります。食材の原価率が目標（初期設定30％）に収まっているか、信号の色で分かります。赤いときは「目標に収まる会費」が目安です。入力は案件ごとに保存されます。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">事務（返信文・AI返信・経理）</summary><p class="note" style="margin:4px 0 8px;">返信文：型が決まった返事はここから。案件を選ぶと会場・日付・人数が入ります。<br>AI返信：届いた文を貼ると、その場の下書きか、Muse／ChatGPTに考えてもらうためのプロンプトが作れます。<br>経理：freeeの運用チェックです。レシートはその場で撮影、が一番効きます。</p></details>
+</div>
+<div class="card">
+<h3>よくある質問</h3>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">データはどこに保存されますか？</summary><p class="note" style="margin:4px 0 8px;">この端末のブラウザの中だけです。サーバーには送られません。その代わり、ブラウザのデータを消すと消えてしまうので、下の「書き出し」でときどき控えを取ってください。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">機種変更したらどうなりますか？</summary><p class="note" style="margin:4px 0 8px;">古い端末で「データの書き出し」をして、新しい端末で「読み込み」をすれば、そのまま引き継げます。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">数字は本当の金額ですか？</summary><p class="note" style="margin:4px 0 8px;">最初に入っている金額や人数は、使い方を試すための例です。実際の数字に書き換えてください。予定の日程と会場は、公開されている開催情報から入れています。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">freeeとはつながりますか？</summary><p class="note" style="margin:4px 0 8px;">この手帳は段取りと下準備の道具で、freee自体の代わりではありません。請求書の発行や確定申告は freee で行い、この手帳は「漏れをなくす」ために使います。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">AI返信にお金や設定は要りますか？</summary><p class="note" style="margin:4px 0 8px;">要りません。APIキーや課金設定は使わず、無料のAIアプリ（Muse／ChatGPT）に文面を渡すだけの作りにしています。ボタン1つで、プロンプトが入った状態でAIが開きます。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">AI返信は、そのまま送って大丈夫？</summary><p class="note" style="margin:4px 0 8px;">下書きとして使い、送る前に必ず自分の目で確認してください。日程・金額・人数のような大事な情報は、特にチェックをお願いします。</p></details>
+</div>
+<div class="card">
+<h3>データの控え</h3>
+<p class="note">予定・コース・原価・チェックの全データを、1つのファイルに書き出せます。</p>
+<button class="btn sub" id="x-export">データの書き出し（JSON）</button>
+<label>控えから戻す</label>
+<input type="file" id="x-import" accept="application/json,.json">
+<button class="btn ghost" id="x-wipe" style="color:var(--bad);border-color:var(--bad);">全データを消す</button>
+</div>
+<button class="btn ghost" id="h-back">ホームに戻る</button>
+</section>
+
+<!-- 予定 -->
+<section class="tab" id="tab-sched">
+<h2>案件カルテ</h2>
+<p class="note">1件の会に、日程・人数・アレルギー・段取りを全部まとめます。カードをタップすると中身が開きます。原価・コース・返信文は、この案件を選ぶだけでつながります。</p>
+<div id="evlist"></div>
+<div class="card">
+<h3>予定を追加</h3>
+<label>日付</label><input type="date" id="f-date">
+<label>会場・案件名</label><input type="text" id="f-name" placeholder="例：器と料理 カモシカ（東京）">
+<div class="grid2">
+<div><label>形式</label><select id="f-type"><option>料理会（コース）</option><option>出張料理</option><option>ケータリング</option><option>料理教室</option><option>ポップアップ</option><option>移動日</option></select></div>
+<div><label>人数</label><input type="number" id="f-people" placeholder="例：10" inputmode="numeric"></div>
+</div>
+<label>状態</label>
+<select id="f-status"><option>相談中</option><option>確定</option><option>仕入・準備</option><option>開催</option><option>請求済み</option></select>
+<button class="btn sub" id="f-add">追加する</button>
+</div>
+</section>
+
+<!-- コース -->
+<section class="tab" id="tab-course">
+<h2>コースと仕入れ</h2>
+<p class="note">案件を選んで、1行に1皿で書きます。保存され、告知用に番号付きで整います。仕入れリストは買い物中にチェックできます。</p>
+<div class="card">
+<label>どの会のコースか</label>
+<select id="m-event"></select>
+<label>コース内容（1行に1皿）<span id="m-count" style="color:var(--terra);"></span></label>
+<textarea id="m-text" rows="8" placeholder="例：&#10;畑の野菜の盛り合わせ&#10;かぶのポタージュ&#10;旬の魚の薪火焼き&#10;季節野菜と豆の煮込み&#10;自家製パン&#10;デザートと食後のお茶"></textarea>
+<button class="btn sub" id="m-save">保存する</button>
+</div>
+<div class="card">
+<h3>告知用の形</h3>
+<div class="tpl" id="m-preview"></div>
+<button class="copy" id="m-copy">この形でコピーする</button>
+</div>
+<div class="card">
+<h3>仕入れリスト</h3>
+<label>買うもの（1行に1品目）</label>
+<textarea id="s-text" rows="6" placeholder="例：&#10;大根 3本&#10;鶏もも肉 2kg&#10;生クリーム 2パック"></textarea>
+<button class="btn sub" id="s-save">保存する</button>
+<div id="s-list" style="margin-top:10px;"></div>
+<button class="copy" id="s-copy">リストをコピーする</button>
+</div>
+</section>
+
+<!-- 原価 -->
+<section class="tab" id="tab-cost">
+<h2>イベント原価計算</h2>
+<p class="note">案件を選ぶと人数が自動で入ります。会費を決める前に、原価率と粗利を確認してください。入力は案件ごとに保存されます。</p>
+<div class="card">
+<label>案件</label>
+<select id="c-event"></select>
+<div class="grid2">
+<div><label>会費（1人・税込）円</label><input type="number" id="c-price" value="13200" inputmode="numeric"></div>
+<div><label>人数</label><input type="number" id="c-people" value="10" inputmode="numeric"></div>
+<div><label>食材費 合計 円</label><input type="number" id="c-food" value="38000" inputmode="numeric"></div>
+<div><label>交通費 円</label><input type="number" id="c-travel" value="12000" inputmode="numeric"></div>
+<div><label>宿泊費 円</label><input type="number" id="c-stay" value="0" inputmode="numeric"></div>
+<div><label>会場費・手数料 円</label><input type="number" id="c-venue" value="15000" inputmode="numeric"></div>
+<div><label>その他（消耗品など）円</label><input type="number" id="c-other" value="3000" inputmode="numeric"></div>
+<div><label>お手伝いの人件費 円</label><input type="number" id="c-help" value="0" inputmode="numeric"></div>
+</div>
+<label>目標の食材原価率（％）</label>
+<input type="number" id="c-target" value="30" inputmode="numeric">
+<div class="result" id="c-result"></div>
+<div class="signal" id="c-signal"></div>
+<p class="note" style="margin-top:12px;">飲食の原価率の目安は28〜35％。信号が黄・赤のときは、下に出る「目標に収まる会費」を目安に、会費か人数の下限を見直してください。</p>
+</div>
+</section>
+
+<!-- 事務（返信文・経理） -->
+<section class="tab" id="tab-office">
+<div class="seg">
+<button id="seg-reply" class="on">返信文</button>
+<button id="seg-ai">AI返信</button>
+<button id="seg-acct">経理</button>
+</div>
+<div id="office-reply">
+<p class="note">案件を選ぶと、会場・日付・人数が文面に自動で入ります。あとは〇〇だけ書き換えて送ってください。</p>
+<label>差し込む案件</label>
+<select id="t-event" style="margin-bottom:14px;"></select>
+<div id="tpllist"></div>
+</div>
+<div id="office-ai" style="display:none;">
+<p class="note">届いたメールやDMを貼ると、返事の材料がそろいます。その場で下書きを作るか、AI（Muse / ChatGPT）に渡す専用プロンプトを作って、本人らしい文面を考えてもらえます。</p>
+<div class="card">
+<label>関係する案件</label>
+<select id="a-event"></select>
+<label>用件の種類</label>
+<select id="a-type">
+<option>予約・開催の相談</option><option>日程の相談</option><option>料金の質問</option><option>アレルギー・食材の相談</option><option>お礼・感想への返事</option><option>その他</option>
+</select>
+<label>届いたメッセージ</label>
+<textarea id="a-inbox" rows="5" placeholder="相手からのメールやDMを、ここにそのまま貼ってください"></textarea>
+<label>伝えたいこと（任意）</label>
+<textarea id="a-memo" rows="2" placeholder="例：その日は空いている。人数は12名までなら可。会費は見積もりを出すと伝えたい"></textarea>
+<button class="btn sub" id="a-draft">その場で下書きを作る</button>
+<button class="btn" id="a-prompt">AIに考えてもらう（プロンプトを作る）</button>
+</div>
+<div class="card" id="a-out-card" style="display:none;">
+<h3 id="a-out-title">下書き</h3>
+<div class="tpl" id="a-out"></div>
+<button class="copy" id="a-copy">この文をコピーする</button>
+<div id="a-open" style="display:none;margin-top:10px;">
+<p class="note" style="margin-bottom:8px;">下のボタンを押すと、プロンプトが入った状態でAIが開きます（無料のままで使えます。APIキーや設定は要りません）。うまく入らないときは、上のコピーで貼ってください。</p>
+<div style="display:flex;gap:8px;">
+<button id="a-open-claude" style="flex:1;background:var(--terra);color:#fff;border:none;font-family:inherit;font-size:13px;letter-spacing:.08em;padding:12px;min-height:48px;cursor:pointer;">Muse で開く（文面入り）</button>
+<button id="a-open-chatgpt" style="flex:1;background:var(--green);color:#fff;border:none;font-family:inherit;font-size:13px;letter-spacing:.08em;padding:12px;min-height:48px;cursor:pointer;">ChatGPT で開く（文面入り）</button>
+</div>
+</div>
+</div>
+</div>
+<div id="office-acct" style="display:none;">
+<p class="note">freeeの力を引き出すのは「口座・カード連携 → その場でレシート撮影 → 請求と入金の照合」の3点です。案件名でタグをそろえると、あとから会ごとの収支も見えます。</p>
+<div class="card">
+<h3>出先でその場に</h3>
+<div id="chk-now"></div>
+</div>
+<div class="card">
+<h3>月1回の締め日（30分）</h3>
+<div id="chk-month"></div>
+</div>
+<div class="card">
+<h3>確定申告の前に</h3>
+<div id="chk-tax"></div>
+</div>
+<button class="btn sub" id="chk-reset">今月のチェックをリセット</button>
+</div>
+</section>
+</main>
+
+<footer>台所手帳 完成版（2026-11-20）<br>※本アプリは、公開情報とヒアリング内容をもとに作った制作サンプルです。<br>データはこの端末の中だけに保存されます（ブラウザの localStorage）。</footer>
+</div>
+
+<nav class="bottom">
+<button data-tab="home" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>ホーム</button>
+<button data-tab="sched"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>予定</button>
+<button data-tab="course"><svg viewBox="0 0 24 24"><path d="M5 3h14v18H5z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>コース</button>
+<button data-tab="cost"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h6M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01M9 19h.01M12 19h.01M15 19h.01"/></svg>原価</button>
+<button data-tab="office"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg>事務</button>
+</nav>
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const yen=n=>'¥'+Math.round(n).toLocaleString('ja-JP');
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function daysBetween(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000);}
+function fmtDate(ds){if(!ds)return '日付未定';const d=new Date(ds+'T00:00:00');const w=['日','月','火','水','木','金','土'][d.getDay()];return (d.getMonth()+1)+'/'+d.getDate()+'（'+w+'）';}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// tabs
+function goTab(name){
+  $$('nav.bottom button').forEach(x=>x.classList.toggle('on',x.dataset.tab===name));
+  $$('section.tab').forEach(x=>x.classList.remove('on'));
+  $('#tab-'+name).classList.add('on');
+  window.scrollTo({top:0});
+  if(name==='home') renderHome();
+}
+$$('nav.bottom button').forEach(b=>b.onclick=()=>goTab(b.dataset.tab));
+$$('[data-goto]').forEach(b=>b.onclick=()=>{ if(b.dataset.seg) setSeg(b.dataset.seg); goTab(b.dataset.goto); });
+
+// ---------- schedule / job records ----------
+const SKEY='daidokoro-schedule-v2';
+const STATUSES=['相談中','確定','仕入・準備','開催','請求済み'];
+const PREP=['人数の確定','アレルギー・苦手な食材の確認','仕入れの発注','前金・入金の確認','開催','請求書の発行（freee）'];
+const seed=[
+ {date:'2026-11-29',name:'ちいさな庭（岐阜・恵那）',type:'料理会（コース）',status:'確定',people:8,allergy:'',prep:{}},
+ {date:'2026-12-05',name:'器と料理 カモシカ（東京・下高井戸）「初霜の食卓」',type:'料理会（コース）',status:'仕入・準備',people:10,allergy:'',prep:{}},
+ {date:'2026-12-06',name:'器と料理 カモシカ（東京・下高井戸）「初霜の食卓」',type:'料理会（コース）',status:'仕入・準備',people:10,allergy:'',prep:{}}
+];
+let evs;
+try{ evs=JSON.parse(localStorage.getItem(SKEY)); if(!Array.isArray(evs)) evs=null; }catch(e){ evs=null; }
+if(!evs){
+  try{ const old=JSON.parse(localStorage.getItem('daidokoro-schedule-v1')); if(Array.isArray(old)&&old.length) evs=old; }catch(e){}
+  if(!evs) evs=seed;
+  evs=evs.map(e=>({people:'',allergy:'',prep:{},...e}));
+  saveEv();
+}
+function saveEv(){ localStorage.setItem(SKEY,JSON.stringify(evs)); }
+function badgeCls(s){return s==='請求済み'?'badge done':(s==='相談中'?'badge ask':'badge');}
+function renderEv(){
+  const el=$('#evlist'); el.innerHTML='';
+  [...evs].sort((a,b)=>(a.date||'9999')<(b.date||'9999')?-1:1).forEach(ev=>{
+    const i=evs.indexOf(ev);
+    const card=document.createElement('div'); card.className='card ev';
+    const head=document.createElement('div'); head.className='ev-head';
+    head.innerHTML=`<div class="d">${fmtDate(ev.date)}</div><div class="b"><div class="t">${esc(ev.name)}</div><div class="s">${esc(ev.type)}${ev.people?' ・ '+esc(ev.people)+'名':''}</div><span class="${badgeCls(ev.status)}">${esc(ev.status)}</span></div><div class="chev">▽</div>`;
+    head.onclick=()=>card.classList.toggle('open');
+    card.appendChild(head);
+    const det=document.createElement('div'); det.className='ev-detail';
+    let prepHtml='<div style="font-size:12.5px;color:var(--gray);letter-spacing:.06em;margin-bottom:2px;">段取りチェック</div>';
+    det.innerHTML=prepHtml;
+    PREP.forEach((p,pi)=>{
+      const l=document.createElement('label'); l.className='prep';
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!(ev.prep&&ev.prep[pi]);
+      cb.onchange=()=>{ ev.prep=ev.prep||{}; ev.prep[pi]=cb.checked; saveEv(); };
+      const sp=document.createElement('span'); sp.textContent=p;
+      l.appendChild(cb); l.appendChild(sp); det.appendChild(l);
+    });
+    const g=document.createElement('div'); g.className='grid2';
+    const dw=document.createElement('div'); const dl=document.createElement('label'); dl.textContent='日付'; const di=document.createElement('input'); di.type='date'; di.value=ev.date||''; di.onchange=()=>{ ev.date=di.value; saveEv(); renderEv(); renderHome(); toast('日付を保存しました'); }; dw.appendChild(dl); dw.appendChild(di);
+    const pw=document.createElement('div'); const pl=document.createElement('label'); pl.textContent='人数'; const pi2=document.createElement('input'); pi2.type='number'; pi2.inputMode='numeric'; pi2.value=ev.people||''; pi2.placeholder='例：10'; pi2.onchange=()=>{ ev.people=pi2.value; saveEv(); renderEv(); toast('人数を保存しました'); }; pw.appendChild(pl); pw.appendChild(pi2);
+    g.appendChild(dw); g.appendChild(pw); det.appendChild(g);
+    const al=document.createElement('label'); al.textContent='アレルギー・苦手な食材のメモ'; det.appendChild(al);
+    const at=document.createElement('textarea'); at.rows=2; at.placeholder='例：2名が甲殻類アレルギー、1名が香菜が苦手'; at.value=ev.allergy||'';
+    at.onchange=()=>{ ev.allergy=at.value; saveEv(); toast('メモを保存しました'); };
+    det.appendChild(at);
+    const row=document.createElement('div'); row.style.cssText='display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;';
+    const adv=document.createElement('button'); adv.className='mini'; adv.style.cssText='border-color:var(--green);color:var(--green);';
+    const si=STATUSES.indexOf(ev.status);
+    adv.textContent = si<STATUSES.length-1 ? '状態を「'+STATUSES[si+1]+'」へ進める' : '最後の状態です';
+    adv.disabled = si>=STATUSES.length-1;
+    adv.onclick=()=>{ ev.status=STATUSES[si+1]; saveEv(); renderEv(); renderHome(); };
+    const del=document.createElement('button'); del.className='mini'; del.textContent='この予定を削除';
+    del.onclick=()=>{ if(!confirm('この予定を削除しますか？')) return; evs.splice(i,1); saveEv(); renderEv(); renderHome(); fillEventSelects(); };
+    row.appendChild(adv); row.appendChild(del); det.appendChild(row);
+    card.appendChild(det);
+    el.appendChild(card);
+  });
+  if(!evs.length) el.innerHTML='<p class="note">予定はまだありません。下のフォームから追加できます。</p>';
+  fillEventSelects();
+}
+$('#f-add').onclick=()=>{
+  const name=$('#f-name').value.trim(); if(!name){ toast('会場・案件名を入れてください'); return; }
+  evs.push({date:$('#f-date').value,name,type:$('#f-type').value,status:$('#f-status').value,people:$('#f-people').value,allergy:'',prep:{}});
+  saveEv(); renderEv(); renderHome(); $('#f-name').value=''; $('#f-people').value=''; toast('追加しました');
+};
+
+// event selects shared by course / cost / templates
+function fillEventSelects(){
+  const names=[...new Set(evs.map(e=>e.name))];
+  [['#m-event',menuKeyCur],['#c-event',costKeyCur],['#t-event',tplKeyCur],['#a-event',aiKeyCur]].forEach(([sel,cur])=>{
+    const el=$(sel); if(!el) return; const prev=cur();
+    el.innerHTML='';
+    (names.length?names:['（予定なし）']).forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;el.appendChild(o);});
+    if(names.includes(prev)) el.value=prev;
+  });
+  loadMenu(); loadShop(); loadCost(); renderTpls();
+}
+function evByName(n){ return evs.find(e=>e.name===n); }
+
+// ---------- home ----------
+function renderHome(){
+const t=todayStr();
+const future=evs.filter(e=>e.date&&e.date>=t&&e.status!=='請求済み').sort((a,b)=>a.date<b.date?-1:1);
+const nx=future[0];
+if(nx){ const dd=daysBetween(t,nx.date); $('#h-days').textContent=dd; $('#h-days-label').textContent = dd===0?'本日':(dd===1?'明日':'日後'); $('#h-next').innerHTML='次の会は<br><b>'+esc(nx.name)+'</b><br>'+fmtDate(nx.date)+' ・ '+esc(nx.type)+(nx.people?' ・ '+esc(nx.people)+'名':'');}
+else { $('#h-days').textContent='―'; $('#h-days-label').textContent='日後'; $('#h-next').textContent='先の予定はまだありません。予定タブから追加できます。';}
+$('#h-backup').style.display = (!localStorage.getItem('daidokoro-lastbackup') && evs.length) ? '' : 'none';
+const todos=[];
+evs.forEach(e=>{
+if(!e.date) return; const d=daysBetween(t,e.date);
+if(d===7&&e.status!=='請求済み') todos.push(['人数確定の連絡をする',e.name+'（開催まで7日）']);
+if(d===3&&e.status!=='請求済み') todos.push(['仕入れを発注する',e.name+'（開催まで3日）']);
+if(d>=0&&d<=2&&e.status!=='請求済み'&&!(e.prep&&e.prep[1])) todos.push(['アレルギーの確認が未完了',e.name]);
+if(d<0&&d>=-7&&e.status!=='請求済み') todos.push(['請求書を発行する（freee）',e.name+'（開催から'+(-d)+'日）']);
+if(d===0) todos.push(['本日開催',e.name]);
+});
+const box=$('#h-todos');
+box.innerHTML = todos.length? '': '<div class="todo"><div class="dot" style="background:var(--green);"></div><div>直近の段取りはありません。<small>予定が近づくと、ここに自動で出ます。</small></div></div>';
+todos.slice(0,6).forEach(([title,sub])=>{
+const d=document.createElement('div'); d.className='todo';
+d.innerHTML='<div class="dot"></div><div>'+esc(title)+'<small>'+esc(sub)+'</small></div>';
+box.appendChild(d);
+});
+const pct=acctProgress(); $('#h-acct-pct').textContent=pct+'%'; $('#h-acct-bar').style.width=pct+'%';
+}
+
+// ---------- course menu & shopping ----------
+const MKEY='daidokoro-menu-v1', SHKEY='daidokoro-shop-v1';
+let menus={}, shops={};
+try{ menus=JSON.parse(localStorage.getItem(MKEY))||{};}catch(e){}
+try{ shops=JSON.parse(localStorage.getItem(SHKEY))||{};}catch(e){}
+function menuKeyCur(){ return $('#m-event')?$('#m-event').value:'';}
+function loadMenu(){ const k=menuKeyCur(); if(!k) return; $('#m-text').value=menus[k]||''; renderMenuPreview();}
+function menuLines(){ return $('#m-text').value.split('\n').map(s=>s.trim()).filter(Boolean);}
+function renderMenuPreview(){
+const lines=menuLines(); $('#m-count').textContent=lines.length?'（'+lines.length+'皿）':'';
+$('#m-preview').textContent = lines.length? menuKeyCur()+'\n\n'+lines.map((l,i)=>(i+1)+'．'+l).join('\n'): 'コースを書くと、ここに番号付きで整います。';
+}
+$('#m-event').addEventListener('change',()=>{ loadMenu(); loadShop();});
+$('#m-text').addEventListener('input',renderMenuPreview);
+$('#m-save').onclick=()=>{ menus[menuKeyCur()]=$('#m-text').value; localStorage.setItem(MKEY,JSON.stringify(menus)); toast('保存しました');};
+$('#m-copy').onclick=async()=>{ try{ await navigator.clipboard.writeText($('#m-preview').textContent); toast('コピーしました');}catch(e){ toast('コピーできませんでした');}};
+function loadShop(){ const k=menuKeyCur(); const s=shops[k]||{text:'',done:{}}; $('#s-text').value=s.text||''; renderShop();}
+function renderShop(){
+const k=menuKeyCur(); const s=shops[k]||{text:'',done:{}};
+const items=(s.text||'').split('\n').map(x=>x.trim()).filter(Boolean);
+const el=$('#s-list'); el.innerHTML='';
+if(!items.length){ el.innerHTML='<p class="note" style="margin:0;">保存すると、ここにチェックできる買い物リストが出ます。</p>'; return;}
+items.forEach((it,idx)=>{
+const l=document.createElement('label'); l.className='shop'+(s.done&&s.done[idx]?' done':'');
+const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!(s.done&&s.done[idx]);
+cb.onchange=()=>{ const cur=shops[k]||{text:'',done:{}}; cur.done=cur.done||{}; cur.done[idx]=cb.checked; shops[k]=cur; localStorage.setItem(SHKEY,JSON.stringify(shops)); renderShop();};
+const sp=document.createElement('span'); sp.textContent=it;
+l.appendChild(cb); l.appendChild(sp); el.appendChild(l);
+});
+}
+$('#s-save').onclick=()=>{ const k=menuKeyCur(); const prev=shops[k]||{done:{}}; shops[k]={text:$('#s-text').value,done:prev.done||{}}; localStorage.setItem(SHKEY,JSON.stringify(shops)); renderShop(); toast('保存しました');};
+$('#s-copy').onclick=async()=>{ const items=($('#s-text').value||'').split('\n').map(x=>x.trim()).filter(Boolean); try{ await navigator.clipboard.writeText(''+menuKeyCur()+'\n'+items.map(i=>'・'+i).join('\n')); toast('コピーしました');}catch(e){ toast('コピーできませんでした');}};
+
+// ---------- cost ----------
+const CKEY='daidokoro-cost-v2';
+let costs={}; try{ costs=JSON.parse(localStorage.getItem(CKEY))||{};}catch(e){}
+const CF=['c-price','c-people','c-food','c-travel','c-stay','c-venue','c-other','c-help','c-target'];
+function costKeyCur(){ return $('#c-event')?$('#c-event').value:'';}
+function loadCost(){
+const k=costKeyCur(); if(!k) return; const s=costs[k];
+if(s){ CF.forEach(id=>{ if(s[id]!==undefined) $('#'+id).value=s[id];});}
+else { const ev=evByName(k); if(ev&&ev.people) $('#c-people').value=ev.people;}
+calc(false);
+}
+$('#c-event').addEventListener('change',loadCost);
+CF.forEach(id=>$('#'+id).addEventListener('input',()=>calc(true)));
+function calc(save){
+const v=id=>Math.max(0,Number($('#'+id).value)||0);
+const price=v('c-price'),people=v('c-people'),food=v('c-food'),target=v('c-target')||30;
+const all=food+v('c-travel')+v('c-stay')+v('c-venue')+v('c-other')+v('c-help');
+const sales=price*people, gross=sales-all;
+const fr=sales?food/sales*100:0, gr=sales?gross/sales*100:0;
+const needPrice=(people&&target)? Math.ceil((food/(target/100))/people/100)*100: 0;
+$('#c-result').innerHTML=
+'<div class="row"><span>売上（会費×人数）</span><span class="yen">'+yen(sales)+'</span></div>'+
+'<div class="row"><span>経費 合計</span><span class="yen">'+yen(all)+'</span></div>'+
+'<div class="row"><span>食材の原価率</span><span class="yen">'+fr.toFixed(1)+'%</span></div>'+
+'<div class="row"><span>1人あたり経費</span><span class="yen">'+(people?yen(all/people):'―')+'</span></div>'+
+(needPrice?'<div class="row"><span>目標'+target+'％に収まる会費（1人）</span><span class="yen">'+yen(needPrice)+'</span></div>':'')+
+'<div class="row big"><span>粗利（自分の取り分）</span><span class="yen">'+yen(gross)+'（'+gr.toFixed(1)+'%）</span></div>';
+const lamp=$('#c-signal');
+let color,label;
+if(fr<=target){ color='var(--ok)'; label='健全です。目標の原価率に収まっています。';}
+else if(fr<=target+5){ color='var(--warn)'; label='やや高めです。食材の内容か会費の微調整を検討してください。';}
+else { color='var(--bad)'; label='目標を超えています。会費・人数の下限・食材の見直しサインです。';}
+lamp.innerHTML='<div class="lamp" style="background:'+color+';"></div><div>食材の原価率 '+fr.toFixed(1)+'% ／ 目標 '+target+'% ― '+label+'</div>';
+if(save){ const k=costKeyCur(); if(k){ const s={}; CF.forEach(id=>s[id]=$('#'+id).value); costs[k]=s; localStorage.setItem(CKEY,JSON.stringify(costs));}}
+}
+
+// ---------- templates ----------
+function tplKeyCur(){ return $('#t-event')?$('#t-event').value:'';}
+$('#t-event').addEventListener('change',renderTpls);
+function fillTpl(body){
+const ev=evByName(tplKeyCur());
+return body.replaceAll('{{会場}}',ev?ev.name:'〇〇').replaceAll('{{日付}}',ev?fmtDate(ev.date):'〇月〇日').replaceAll('{{人数}}',ev&&ev.people?ev.people:'〇');
+}
+const tpls=[
+['① 問い合わせへの初回返信','お問い合わせありがとうございます。伊藤渉です。\nご相談の件、ぜひ詳しくお聞かせください。検討を進めるため、次の4点をお知らせいただけますか。\n\n・ご希望の日程（候補日でも構いません）\n・場所（市区町村までで大丈夫です）\n・人数\n・形式（料理会／出張料理／料理教室 など）\n\n内容を確認して、2日以内にお返事します。'],
+['② 料金の相談を受けたとき','ありがとうございます。料金は、人数・場所・食材によって変わるため、個別にお見積もりしています。\n目安として、料理会の会費は会場ごとに設定しており、直近の例では1人13,200円（税込）のコースを開催しています。\n日程・場所・人数を教えていただければ、具体的なお見積もりをお出しします。'],
+['③ 日程の調整','日程のご相談ありがとうございます。\nその時期は、{{日付}}に{{会場}}での料理会が入っているため、前後の移動も含めて調整させてください。\n候補日を2〜3日いただけると、仕入れの段取りまで含めて確実にお返事できます。'],
+['④ アレルギー・苦手な食材の確認','ご予約ありがとうございます。当日の料理の参考に、アレルギーや苦手な食材があればお知らせください。\n重篤なアレルギーの場合は、安全のため事前に詳しく確認させていただくことがあります。'],
+['⑤ 人数確定のリマインド（7日前）','{{日付}}の{{会場}}の会が近づいてまいりました。\n仕入れの都合上、最終人数の確定をお願いできますか。現在は{{人数}}名で伺っています。\nアレルギー等の追加情報があれば、あわせてお知らせください。'],
+['⑥ 前金の案内','ご予約ありがとうございます。食材の仕入れの関係で、開催前に会費の一部をお預かりしています。\nお支払い方法は別途ご案内しますので、ご確認をお願いいたします。'],
+['⑦ 開催後のお礼と請求の案内','昨日はありがとうございました。〇〇の野菜を、あの場で皆さんと囲めたことが何より嬉しかったです。\nご請求書は freee からお送りしますので、ご確認をお願いいたします。\nまた季節が変わる頃に、ぜひご一緒できれば幸いです。']
+];
+function renderTpls(){
+const tl=$('#tpllist'); if(!tl) return; tl.innerHTML='';
+tpls.forEach(([title,body])=>{
+const filled=fillTpl(body);
+const c=document.createElement('div'); c.className='card';
+const h=document.createElement('div'); h.style.cssText='font-weight:600;letter-spacing:.06em;'; h.textContent=title; c.appendChild(h);
+const p=document.createElement('div'); p.className='tpl'; p.textContent=filled; c.appendChild(p);
+const b=document.createElement('button'); b.className='copy'; b.textContent='この文をコピーする';
+b.onclick=async()=>{ try{ await navigator.clipboard.writeText(filled); toast('コピーしました');}catch(e){ toast('コピーできませんでした');}};
+c.appendChild(b); tl.appendChild(c);
+});
+}
+
+// ---------- accounting checklist ----------
+const AKEY='daidokoro-check-v1';
+const groups={
+'chk-now':[['レシートをその場で撮影して freee に取り込む','交通費・食材の領収書は財布にためない'],['交通費は移動中に登録する','新幹線・電車・ガソリン代を案件名のタグで登録'],['口座・カード連携の明細を確認する','freeeの自動で経理に未処理が残っていないか']],
+'chk-month':[['freee の未登録取引をゼロにする','銀行・カード連携の取りこぼし確認'],['開催した会の売上（会費）を登録する','会場からの入金と照合'],['請求書の発行漏れを確認する','開催後3日以内がルール'],['来月の予定と経費の見込みを見る','遠方の会は交通費の予約も一緒に']],
+'chk-tax':[['1年分のレシート取込が完了しているか','freee の証憑一覧で確認'],['家事按分（家賃・通信費など）の割合を決める','根拠をメモに残す'],['freee の申告フローで下書きを作る','分からない科目だけ税理士・窓口に相談']]
+};
+let checks={}; try{ checks=JSON.parse(localStorage.getItem(AKEY))||{};}catch(e){}
+function acctProgress(){
+let total=0,done=0;
+Object.entries(groups).forEach(([gid,items])=>items.forEach((_,idx)=>{ total++; if(checks[gid+'-'+idx]) done++;}));
+return total?Math.round(done/total*100):0;
+}
+function renderChk(){
+Object.entries(groups).forEach(([gid,items])=>{
+const el=document.getElementById(gid); if(!el) return; el.innerHTML='';
+items.forEach(([label,sub],idx)=>{
+const key=gid+'-'+idx;
+const l=document.createElement('label'); l.className='chk';
+const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!checks[key];
+cb.onchange=()=>{ checks[key]=cb.checked; localStorage.setItem(AKEY,JSON.stringify(checks)); renderHome();};
+const sp=document.createElement('span'); sp.innerHTML=esc(label)+'<small>'+esc(sub)+'</small>';
+l.appendChild(cb); l.appendChild(sp); el.appendChild(l);
+});
+});
+}
+$('#chk-reset').onclick=()=>{ checks={}; localStorage.setItem(AKEY,'{}'); renderChk(); renderHome(); toast('リセットしました');};
+
+// office segment
+function setSeg(which){
+$('#seg-reply').classList.toggle('on',which==='reply');
+$('#seg-ai').classList.toggle('on',which==='ai');
+$('#seg-acct').classList.toggle('on',which==='acct');
+$('#office-reply').style.display=which==='reply'?'':'none';
+$('#office-ai').style.display=which==='ai'?'':'none';
+$('#office-acct').style.display=which==='acct'?'':'none';
+}
+$('#seg-reply').onclick=()=>setSeg('reply');
+$('#seg-ai').onclick=()=>setSeg('ai');
+$('#seg-acct').onclick=()=>setSeg('acct');
+
+// ---------- AI reply assistant ----------
+function aiKeyCur(){ return $('#a-event')?$('#a-event').value:''; }
+function aiEventLine(){
+const ev=evByName(aiKeyCur());
+if(!ev) return '（案件の指定なし）';
+return '・案件：'+ev.name+'\n・日付：'+fmtDate(ev.date)+(ev.date?'（'+ev.date+'）':'')+'\n・形式：'+ev.type+'\n・人数：'+(ev.people?ev.people+'名':'未定')+'\n・状態：'+ev.status+(ev.allergy?'\n・アレルギーメモ：'+ev.allergy:'');
+}
+const DRAFTS={
+'予約・開催の相談':'お問い合わせありがとうございます。伊藤渉です。\nご相談の件、ぜひお引き受けできればと思います。段取りを進めるため、日程・場所・人数・形式（料理会／出張料理／料理教室）を教えていただけますか。\n内容を確認して、2日以内にお返事します。',
+'日程の相談':'ご連絡ありがとうございます。伊藤渉です。\n日程の件、移動と仕入れの段取りも含めて確認します。候補日を2〜3日いただけると、確実にお返事できます。\n直近では{{日付}}に{{会場}}での会が入っていますが、前後で調整できる日もあります。',
+'料金の質問':'お問い合わせありがとうございます。伊藤渉です。\n料金は、人数・場所・食材によって変わるため、個別にお見積もりしています。目安として、料理会の会費は1人13,200円（税込）の例があります。\n日程・場所・人数を教えていただければ、具体的なお見積もりをお出しします。',
+'アレルギー・食材の相談':'ご連絡ありがとうございます。伊藤渉です。\nアレルギーや苦手な食材の情報、ありがとうございます。当日のコース作りの参考にします。\n重篤なアレルギーの場合は、安全のため、当日使う食材を事前にお伝えすることもできます。',
+'お礼・感想への返事':'温かいお言葉をありがとうございます。伊藤渉です。\nあの日の野菜と食卓を、そう感じていただけたことが何より嬉しいです。\nまた季節が変わる頃に、ぜひご一緒できれば幸いです。',
+'その他':'ご連絡ありがとうございます。伊藤渉です。\n内容を確認しました。詳しく分かり次第、改めてお返事します。'
+};
+function showAiOut(title,text,isPrompt){
+$('#a-out-card').style.display='';
+$('#a-out-title').textContent=title;
+$('#a-out').textContent=text;
+$('#a-open').style.display=isPrompt?'':'none';
+$('#a-out-card').scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('#a-draft').onclick=()=>{
+const type=$('#a-type').value;
+const ev=evByName(aiKeyCur());
+let body=(DRAFTS[type]||DRAFTS['その他']).replaceAll('{{会場}}',ev?ev.name:'〇〇').replaceAll('{{日付}}',ev?fmtDate(ev.date):'〇月〇日');
+const memo=$('#a-memo').value.trim();
+if(memo) body+='\n\n（お伝えしたい点）'+memo;
+showAiOut('下書き（その場で作成）',body,false);
+};
+function makePrompt(){
+const inbox=$('#a-inbox').value.trim();
+if(!inbox) return null;
+const memo=$('#a-memo').value.trim();
+return 'あなたは、出張料理人・伊藤渉さんの返信文を考えるアシスタントです。\n'+
+'下の「届いたメッセージ」への返信文を、渉さん本人として書いてください。\n\n'+
+'【渉さんについて】\n'+
+'・岐阜出身の出張料理人。店舗は持たず、全国の農家・会場で料理会、出張料理、料理教室を行う\n'+
+'・自然栽培の野菜を扱う青果ミコト屋で料理番を務め、2024年11月に独立\n'+
+'・畑の近くの野菜を、シンプルに料理することが持ち味\n\n'+
+'【文体のルール】\n'+
+'・丁寧だが、堅すぎない。売り込み感を出さない\n'+
+'・長すぎず、スマホで読みやすい長さ（250〜400字目安）\n'+
+'・分からないことは断定せず、「確認して改めてお返事します」と逃げ道を残す\n'+
+'・料金を聞かれたら即答せず、人数・場所・食材で変わるため見積もりを出す流れにする\n'+
+'・最後は季節や野菜に触れる一文で、柔らかく締める\n\n'+
+'【関係する案件】\n'+aiEventLine()+'\n\n'+
+'【用件の種類】'+$('#a-type').value+'\n\n'+
+'【届いたメッセージ】\n'+inbox+'\n\n'+
+(memo?'【渉さんが伝えたいこと】\n'+memo+'\n\n':'')+
+'【出力】\n返信文を2案出してください。A案：標準の丁寧な文。B案：少し短く、親しみやすい文。各案、件名は不要で本文のみ。';
+}
+$('#a-prompt').onclick=()=>{
+const prompt=makePrompt();
+if(!prompt){ toast('届いたメッセージを貼ってください'); return; }
+showAiOut('AI用プロンプト（そのままAIに渡せます）',prompt,true);
+};
+function openWithAI(base){
+const prompt=makePrompt();
+if(!prompt){ toast('届いたメッセージを貼ってください'); return; }
+if(prompt.length>1800){ toast('文が長いので、コピーして貼ってください'); showAiOut('AI用プロンプト（コピーしてAIに貼る）',prompt,true); return; }
+window.open(base+encodeURIComponent(prompt),'_blank','noopener');
+}
+$('#a-open-claude').onclick=()=>openWithAI('https://claude.ai/new?q=');
+$('#a-open-chatgpt').onclick=()=>openWithAI('https://chatgpt.com/?q=');
+$('#a-copy').onclick=async()=>{ try{ await navigator.clipboard.writeText($('#a-out').textContent); toast('コピーしました'); }catch(e){ toast('コピーできませんでした'); } };
+
+// ---------- help & data ----------
+function openHelp(){
+$$('nav.bottom button').forEach(x=>x.classList.remove('on'));
+$$('section.tab').forEach(x=>x.classList.remove('on'));
+$('#tab-help').classList.add('on');
+window.scrollTo({top:0});
+}
+$('#h-help').onclick=openHelp;
+$('#h-help2').onclick=openHelp;
+$('#h-back').onclick=()=>goTab('home');
+const DATAKEYS=['daidokoro-schedule-v2','daidokoro-menu-v1','daidokoro-shop-v1','daidokoro-cost-v2','daidokoro-check-v1'];
+$('#x-export').onclick=()=>{
+const data={}; DATAKEYS.forEach(k=>{ const v=localStorage.getItem(k); if(v!==null) data[k]=v; });
+const blob=new Blob([JSON.stringify({app:'daidokoro-techou',version:2,exported:new Date().toISOString(),data},null,2)],{type:'application/json'});
+const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='daidokoro-backup.json'; a.click();
+setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+localStorage.setItem('daidokoro-lastbackup',new Date().toISOString());
+toast('書き出しました');
+};
+$('#x-import').onchange=e=>{
+const f=e.target.files[0]; if(!f) return;
+const r=new FileReader();
+r.onload=()=>{ try{ const obj=JSON.parse(r.result); const data=obj.data||obj;
+Object.entries(data).forEach(([k,v])=>{ if(DATAKEYS.includes(k)) localStorage.setItem(k,String(v)); });
+toast('読み込みました。再読み込みします'); setTimeout(()=>location.reload(),600);
+}catch(err){ toast('読み込めませんでした'); } };
+r.readAsText(f);
+};
+$('#x-wipe').onclick=()=>{
+if(!confirm('予定・コース・原価・チェックの全データが消えます。本当に消しますか？')) return;
+DATAKEYS.forEach(k=>localStorage.removeItem(k));
+toast('消しました。再読み込みします'); setTimeout(()=>location.reload(),600);
+};
+
+// init
+$('#f-date').value=todayStr();
+renderEv();
+renderChk();
+renderHome();
+</script>
+</body>
+</html>
