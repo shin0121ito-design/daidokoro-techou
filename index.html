@@ -145,6 +145,7 @@ footer{padding:14px 16px 10px;font-size:11px;color:var(--gray);text-align:center
 <div class="card">
 <h3>画面ごとの説明</h3>
 <details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">ホーム</summary><p class="note" style="margin:4px 0 8px;">次の会までの日数と、「今日やること」が自動で出ます。開催7日前・3日前・開催後になると、やるべき段取りがここに並びます。経理チェックの進み具合も確認できます。</p></details>
+<details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">写真から入力する</summary><p class="note" style="margin:4px 0 8px;">予定とコースには「写真から作る」欄があります。①指示文をコピー、②AIアプリ（ClaudeやChatGPT）で写真と一緒に送る、③返ってきた文を貼ってボタンを押す。この3手で、手打ちなしでフォームや献立に入ります。レシートは freee のアプリが撮影で自動読み取りしてくれるので、経理タブの手順どおりにどうぞ。</p></details>
 <details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">予定（案件カルテ）</summary><p class="note" style="margin:4px 0 8px;">カードをタップすると開きます。中には段取りチェック（人数確定、アレルギー確認、仕入、入金、開催、請求）と、アレルギーのメモ欄があります。状態はボタン1つで次へ進められます。</p></details>
 <details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">コース</summary><p class="note" style="margin:4px 0 8px;">案件を選んで、1行に1皿で書きます。「保存する」を押すと残り、告知用に番号付きで整います。予定にない会は、「新しい会を自分で追加する」に名前を打てば追加できます。コースと仕入れリストは、打ったそばから自動で保存されます（保存ボタンを押し忘れても消えません）。仕入れリストは、買い物中にチェックを付けながら使えます。最初から入っているコースは季節と作風からの「たたき台」なので、実際の献立に書き換えてください。</p></details>
 <details><summary style="cursor:pointer;padding:8px 0;font-size:14.5px;">原価</summary><p class="note" style="margin:4px 0 8px;">案件を選ぶと人数が自動で入ります。食材の原価率が目標（初期設定30％）に収まっているか、信号の色で分かります。赤いときは「目標に収まる会費」が目安です。入力は案件ごとに保存されます。</p></details>
@@ -185,6 +186,17 @@ footer{padding:14px 16px 10px;font-size:11px;color:var(--gray);text-align:center
 </div>
 <div id="evlist"></div>
 <div class="card">
+<h3>写真から予定を作る（AI読み取り）</h3>
+<p class="note" style="margin-top:0;">チラシ・申込書・手書きメモ・DMの画面などを写真に撮れば、AIが読んで下のフォームに入れます。手打ちは不要です。</p>
+<div class="todo"><div class="dot"></div><div><b>1．下のボタンで指示文をコピー</b></div></div>
+<div class="todo"><div class="dot"></div><div><b>2．AIアプリ（ClaudeやChatGPT）を開き、写真と一緒に貼って送る</b><small>AIが決まった形で予定を返してきます</small></div></div>
+<div class="todo"><div class="dot"></div><div><b>3．返ってきた文をここに貼って、読み取りボタン</b><small>日付・会場・形式・人数がフォームに入ります。最後に確認して「追加する」を押してください</small></div></div>
+<button class="btn sub" id="p-copy" style="margin-top:10px;">1．指示文をコピーする</button>
+<label>3．AIの返事をここに貼る</label>
+<textarea id="p-paste" rows="4" placeholder="例：&#10;日付: 2026-12-20&#10;会場: 〇〇邸&#10;形式: 出張料理&#10;人数: 8"></textarea>
+<button class="btn" id="p-parse">読み取ってフォームに入れる</button>
+</div>
+<div class="card">
 <h3>予定を追加</h3>
 <label>日付</label><input type="date" id="f-date">
 <label>会場・案件名</label><input type="text" id="f-name" placeholder="例：器と料理 カモシカ（東京）">
@@ -219,6 +231,16 @@ footer{padding:14px 16px 10px;font-size:11px;color:var(--gray);text-align:center
 <h3>告知用の形</h3>
 <div class="tpl" id="m-preview"></div>
 <button class="copy" id="m-copy">この形でコピーする</button>
+</div>
+<div class="card">
+<h3>写真からコースを作る（AI読み取り）</h3>
+<p class="note" style="margin-top:0;">手書きの献立メモを写真に撮れば、AIが読んでコース内容に入れます。</p>
+<div class="todo"><div class="dot"></div><div><b>1．指示文をコピー → AIアプリで写真と一緒に送る</b></div></div>
+<div class="todo"><div class="dot"></div><div><b>2．返ってきた文を貼って、入れるボタン</b></div></div>
+<button class="btn sub" id="cm-copy" style="margin-top:10px;">1．指示文をコピーする</button>
+<label>2．AIの返事をここに貼る</label>
+<textarea id="cm-paste" rows="4" placeholder="例：&#10;冬野菜の盛り合わせ&#10;蕪のすり流し&#10;旬の魚の薪火焼き"></textarea>
+<button class="btn" id="cm-parse">コース内容に入れる</button>
 </div>
 <div class="card">
 <h3>仕入れリスト</h3>
@@ -424,6 +446,34 @@ function renderEv(){
   fillEventSelects();
   renderCalendar();
 }
+// ---------- photo -> AI -> form ----------
+const EVENT_PROMPT='写真（チラシ・申込書・手書きメモ・画面のスクリーンショットなど）から予定を読み取ってください。次の形式だけで返してください。説明や挨拶は不要です。分からない項目は空欄にしてください。\n日付: YYYY-MM-DD\n会場: （場所や案件の名前）\n形式: 料理会（コース）、出張料理、ケータリング、料理教室、ポップアップ、移動日 のうち一番近いもの\n人数: 数字だけ';
+const COURSE_PROMPT='この写真の献立（手書きメモなど）を読み取って、料理の名前だけを、1行に1品ずつ返してください。番号や記号は付けないでください。説明は不要です。';
+async function copyText(t,ok){ try{ await navigator.clipboard.writeText(t); toast(ok); }catch(e){ toast('コピーできませんでした'); } }
+$('#p-copy').onclick=()=>copyText(EVENT_PROMPT,'コピーしました。AIアプリで写真と一緒に送ってください');
+$('#cm-copy').onclick=()=>copyText(COURSE_PROMPT,'コピーしました。AIアプリで写真と一緒に送ってください');
+$('#p-parse').onclick=()=>{
+const t=$('#p-paste').value; if(!t.trim()){ toast('AIの返事を貼ってください'); return; }
+let hit=0;
+const dm=t.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/)||t.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+if(dm){ $('#f-date').value=dm[1]+'-'+String(dm[2]).padStart(2,'0')+'-'+String(dm[3]).padStart(2,'0'); hit++; }
+const nm=t.match(/(?:会場|場所|案件名|会の名前)[:：]\s*(.+)/);
+if(nm){ $('#f-name').value=nm[1].trim(); hit++; }
+const pm=t.match(/人数[:：]?\s*(\d+)/);
+if(pm){ $('#f-people').value=pm[1]; hit++; }
+['料理会（コース）','出張料理','ケータリング','料理教室','ポップアップ','移動日'].forEach(x=>{ if(t.includes(x)){ $('#f-type').value=x; hit++; } });
+if(!hit){ toast('読み取れませんでした。形式を確認してください'); return; }
+toast('読み取りました。確認して「追加する」を押してください');
+document.getElementById('f-name').scrollIntoView({behavior:'smooth',block:'center'});
+};
+$('#cm-parse').onclick=()=>{
+const t=$('#cm-paste').value; if(!t.trim()){ toast('AIの返事を貼ってください'); return; }
+const lines=t.split('\n').map(x=>x.replace(/^[\s・\-*>\d.、)）]+/,'').trim()).filter(x=>x&&x.length<=40&&!/^(日付|会場|形式|人数)[:：]/.test(x));
+if(!lines.length){ toast('読み取れませんでした'); return; }
+const ta=$('#m-text'); ta.value=lines.join('\n'); ta.dispatchEvent(new Event('input'));
+toast(lines.length+'品をコースに入れました');
+};
+
 // ---------- calendar ----------
 const calNow=new Date();
 let calY=calNow.getFullYear(), calM=calNow.getMonth(), calSel=todayStr();
